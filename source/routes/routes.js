@@ -45,10 +45,9 @@ router.get('/', async (req, res) => {
 
 
 // Change password..
-router.get('/check-password', verifyToken, async (req, res) => {
+router.post('/check-password', verifyToken, async (req, res) => {
     try {
-        const email = req.body.email
-        const password = req.body.password
+        const {email, password} = req.body;
         const credential = await Credential.find({ email: email, password: password }).select({ email: 1, password: 1 })
         // console.log(credential)
         if (credential.length == 0) {
@@ -65,11 +64,10 @@ router.get('/check-password', verifyToken, async (req, res) => {
 // Change password
 router.put('/change-password', verifyToken, async (req, res) => {
     try {
-        const email = req.body.email
+        const {email, password: updatedpassword} = req.body;
         const details = await Credential.find({ email: email })
         const password = details[0].password
         // console.log(password)
-        const updatedpassword = req.body.password
         if (password == updatedpassword) {
             res.status(200).json({ message: "Old & new password are same" })
         }
@@ -86,9 +84,8 @@ router.put('/change-password', verifyToken, async (req, res) => {
 // Forgot password
 router.put('/forget-password', async (req, res) => {
     try {
-        const email = req.body.email
-        const updatedpassword = req.body.password
-        const credential = await Credential.findOneAndUpdate({ email: email }, { password: updatedpassword })
+        const {email, password: updatedpassword} = req.body;
+        await Credential.findOneAndUpdate({ email: email }, { password: updatedpassword })
         res.status(200).json({ message: "Password changed successfully" })
     } catch (error) {
         res.send(error)
@@ -98,7 +95,8 @@ router.put('/forget-password', async (req, res) => {
 
 router.get('/check-email', async (req, res) => {
     try {
-        const email = req.body.email
+        const email = req.query.email;
+        console.log(email);
         const credential = await Credential.find({ email: email }).select({ email: 1 })
         if (credential.length == 0) {
             res.status(200).json({
@@ -227,24 +225,15 @@ router.get('/admin-detail/:adminId', verifyToken, async (req, res) => {
 })
 
 
-
-
-router.get('/get-mark', verifyToken, async (req, res) => {
+router.post('/get-mark', verifyToken, async (req, res) => {
     try {
-        const batchYear = req.body.batchYear
-        const dept = req.body.dept
-        const sem = req.body.sem
-        const courseId = req.body.courseId
-        const examType = req.body.examType
+        const { batchYear, dept, sem, courseId, examType } = req.body;
 
         const studentRollNo = []
         const marks = []
-        console.log(examType)
         const data = await Batch.find({ batchYear: batchYear, dept: dept }).select({ students: 1 })
 
-        console.log(data[0])
         for (let i = 0; i < data[0].students.length; i++) {
-            console.log(data[0].students[i])
             // data[0].students.forEach(async (studs)=>{
             studentRollNo[i] = data[0].students[i]
             const student = await Student.find({ rollNo: studentRollNo[i] }).select({ name: 1, rollNo: 1, result: 1 })
@@ -289,18 +278,12 @@ router.get('/get-mark', verifyToken, async (req, res) => {
 })
 
 
-
-
-
-
-
 // Get all students..
 // by department , batch
-router.get('/students', verifyToken, async (req, res) => {
+router.post('/students', verifyToken, async (req, res) => {
     try {
         if (req.user.role == 'faculty') {
-            var department = req.body.department
-            var batchYear = req.body.batchYear //take from front-end
+            const { department, batchYear } = req.body;
 
             const dataItem = await Batch.find({ batchYear: batchYear, dept: department }).select({ students: 1, _id: 0 })
             if (dataItem.length == 0) {
@@ -353,7 +336,6 @@ router.get('/student-detail/:rollNo', verifyToken, async (req, res) => {
         return res.send(error)
     }
 })
-
 
 
 // Post request for add student
@@ -411,9 +393,6 @@ router.post('/add-student', verifyToken, async (req, res) => {
         res.send(error)
     }
 });
-
-
-
 
 
 // Update student..
@@ -481,7 +460,6 @@ router.delete('/delete-student', verifyToken, async (req, res) => {
         res.send(error)
     }
 })
-
 
 
 // Get all Faculties..
@@ -721,7 +699,7 @@ router.get('/courses/:courseId', verifyToken, async (req, res) => {
 
 
 // Current course for students..
-router.get('/current-course', verifyToken, async (req, res) => {
+router.post('/current-course', verifyToken, async (req, res) => {
     try {
         const rollNo = req.body.rollNo
         const student = await Student.find({rollNo:rollNo}).select({batchYear:1,department:1})
@@ -1118,11 +1096,14 @@ router.get('/result/:RollNo', verifyToken, async (req, res) => {
 })
 
 //for login with email and password..
-router.get('/login-user', async (req, res) => {
+router.post('/login-user', async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log(email, password);
+        const data = await Credential.find({});
+        console.log(data);
         const dataItem = await Credential.find({ email: email, password: password }).select({ password: 0, _id: 0 })
-        // console.log(dataItem)
+        console.log(dataItem)
         if (dataItem.length == 0) {
             res.json({
                 message: "Invalid Credentials"
@@ -1153,6 +1134,7 @@ router.get('/login-user', async (req, res) => {
                 }
             }
             catch (error) {
+                console.log(error);
                 return res.status(400).json({ error: error });
             }
 
@@ -1166,7 +1148,7 @@ router.get('/login-user', async (req, res) => {
 
 
 // for login with microsoft
-router.get('/social-login', async (req, res) => {
+router.post('/social-login', async (req, res) => {
     try {
         const email = req.body.email;
         const dataItem = await Credential.find({ email: email }).select({ password: 0, _id: 0 })
@@ -1236,9 +1218,6 @@ router.put('/promote-batch', verifyToken, async (req, res) => {
 // For dropdown..
 // add assignment..
 // {cat1:true,cat2:false}
-
-
-
 
 router.put('/edit-dropdown', verifyToken, (req, res) => {
     if (req.user.role == 'admin') {
