@@ -29,6 +29,7 @@ const Batch = item.Batch
 const Enrollment = item.Enrollment
 const Credential = item.Credential
 const Admin = item.Admin
+const MentalWellbeing = item.MentalWellbeing;
 
 //Getting ready(Home page)..
 router.get('/', async (req, res) => {
@@ -356,8 +357,9 @@ router.post('/add-student', verifyToken, async (req, res) => {
 
             if (flag == 0) {
                 var result = [{ "semNo": 1, "subjectMarks": [] }, { "semNo": 2, "subjectMarks": [] }, { "semNo": 3, "subjectMarks": [] }, { "semNo": 4, "subjectMarks": [] }, { "semNo": 5, "subjectMarks": [] }, { "semNo": 6, "subjectMarks": [] }, { "semNo": 7, "subjectMarks": [] }, { "semNo": 8, "subjectMarks": [] }]
-                const student = new Student({ rollNo: rollNo, name: name, admissionNo: admissionNo, DOB: DOB, department: department, email: email, batchYear: batchYear, addressLine1: addressLine1, addressLine2: addressLine2, city: city, state: state, country: country, parentName: parentName, phoneNum: phoneNum, parentNum: parentNum, result: result })
+                const student = new Student({ rollNo: rollNo, name: name, admissionNo: admissionNo, DOB: DOB, department: department, email: email, batchYear: batchYear, addressLine1: addressLine1, addressLine2: addressLine2, city: city, state: state, country: country, parentName: parentName, phoneNum: phoneNum, parentNum: parentNum, result })
                 await student.save()
+                console.log('Student saved')
                 // if status is 200 , just send that..
 
 
@@ -380,6 +382,10 @@ router.post('/add-student', verifyToken, async (req, res) => {
                 await credentail.save()
                 // if status is 200 , just send that..
 
+                // add mental wellbeing reference here
+                const mentalWellBeing = new MentalWellbeing({rollNo, email});
+                await mentalWellBeing.save()
+
                 return res.status(200).json({
                     student: { rollNo, name, admissionNo, DOB, department, email, batchYear, addressLine1, addressLine2, city, state, country, parentName, phoneNum },
                     success: "Student added sucessfully"
@@ -390,6 +396,7 @@ router.post('/add-student', verifyToken, async (req, res) => {
             res.status(401).json({ message: "unauthorized" })
         }
     } catch (error) {
+        console.log(error);
         res.send(error)
     }
 });
@@ -1304,6 +1311,17 @@ router.get('/get-dropdown', verifyToken, (req, res) => {
     }
 })
 
+// Mental wellbeing
+router.put('/mental-wellbeing-score', verifyToken, (req, res) => {
+    if(req.user.role === "faculty" || req.user.role === "admin") {
+        try {
+            const { rollNo } = req.body;
+            
+        } catch (error) {
+            res.send(error);
+        }
+    }
+})
 
 module.exports = router;
 

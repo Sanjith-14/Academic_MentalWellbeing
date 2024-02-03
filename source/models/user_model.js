@@ -47,8 +47,7 @@ const subjectSchema = new mongoose.Schema({
 const courseWithMarks = new mongoose.Schema({
     courseId: {
         type: String,
-        required: true,
-        // unique:true
+        required: true
     },
     // new field..
     courseType:{
