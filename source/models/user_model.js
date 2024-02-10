@@ -428,15 +428,55 @@ const mentalWellbeingScoreSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // type is array of object
-    //  {text_score:'', mcq_score:'', face_score:'', text_emotion: '', mcq_emotion:'', face_emotion:'', total:''}
-    mentalWellBeingScores: {
-        type: [],
-        default: [],
+    textScore: {
+        type: Number,
+        min:1,
+        max:10
+    },
+    mcqScore: {
+        type: Number,
+        min:1,
+        max:10
+    },
+    faceScore: {
+        type: Number,
+        min:1,
+        max:10
+    },
+    textEmotion: {
+        type: String,
+    },
+    mcqEmotion: {
+        type: String,
+    },
+    faceEmotion: {
+        type: String,
+    },
+    total: {
+        type: Number,
+        min:1,
+        max:10
     },
 })
 
 const MentalWellbeing = mongoose.model('MentalWellbeing',mentalWellbeingScoreSchema)
 
+const URLsSchema = new mongoose.Schema({
+    urlForImageToEmotion: {
+        type: String,
+        required: true,
+    },
+    urlForTextToEmotion: {
+        type: String,
+        required: true
+    },
+    // mostly not required field, use for last time changes
+    urlForMCQToEmotion: {
+        type: String,
+        default: ''
+    },
+})
 
-module.exports = { Student, Faculty, Course, Batch, Enrollment, Credential, Admin, MentalWellbeing }
+const URLs = mongoose.model('URLs',URLsSchema)
+
+module.exports = { Student, Faculty, Course, Batch, Enrollment, Credential, Admin, MentalWellbeing, URLs }

@@ -30,6 +30,7 @@ const Enrollment = item.Enrollment
 const Credential = item.Credential
 const Admin = item.Admin
 const MentalWellbeing = item.MentalWellbeing;
+const URLs = item.URLs;
 
 //Getting ready(Home page)..
 router.get('/', async (req, res) => {
@@ -1312,15 +1313,33 @@ router.get('/get-dropdown', verifyToken, (req, res) => {
 })
 
 // Mental wellbeing
-router.put('/mental-wellbeing-score', verifyToken, (req, res) => {
-    if(req.user.role === "faculty" || req.user.role === "admin") {
+router.get('/mental-wellbeing-score/:rollNo', verifyToken, async(req, res) => {
+    if(req.user.role === "faculty" || req.user.role === "admin" || req.user.role === "student") {
         try {
-            const { rollNo } = req.body;
-            
+            const { rollNo } = req.params;
+            const scores = await MentalWellbeing.find({rollNo}).select({_id:0});
+            res.status(200).json({ scores });
         } catch (error) {
             res.send(error);
         }
     }
+})
+
+router.put('/mental-wellbeing-score', async(req, res) => {
+    try {
+        const { rollNo, email, ...detailsToUpdate } = req.body;
+        await MentalWellbeing.findOneAndUpdate({rollNo, email}, {...detailsToUpdate});
+        res.status(200).json({message: "Score updated successfully"});
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+})
+
+// get URL
+router.get('/url', async (req, res) => {
+    const urls = await URLs.find({}).select({_id:0})
+    res.status(200).json({urls});
 })
 
 module.exports = router;
