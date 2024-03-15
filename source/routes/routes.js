@@ -1328,7 +1328,35 @@ router.get('/mental-wellbeing-score/:rollNo', verifyToken, async(req, res) => {
 router.put('/mental-wellbeing-score', async(req, res) => {
     try {
         const { rollNo, email, ...detailsToUpdate } = req.body;
-        await MentalWellbeing.findOneAndUpdate({rollNo, email}, {...detailsToUpdate});
+        console.log(detailsToUpdate);
+        if('textScore' in detailsToUpdate){
+            const score = detailsToUpdate.textScore;
+            await MentalWellbeing.findOneAndUpdate(
+                { rollNo, email },
+                { $push: { textScore: score}}
+            )
+        }
+        if('mcqScore' in detailsToUpdate){
+            const score = detailsToUpdate.mcqScore;
+            await MentalWellbeing.findOneAndUpdate(
+                { rollNo, email },
+                { $push: { mcqScore: score}}
+            )
+        }
+        if('faceScore' in detailsToUpdate){
+            const score = detailsToUpdate.faceScore;
+            await MentalWellbeing.findOneAndUpdate(
+                { rollNo, email },
+                { $push: { faceScore: score}}
+            )
+        }
+        if('total' in detailsToUpdate){
+            const score = detailsToUpdate.total;
+            await MentalWellbeing.findOneAndUpdate(
+                { rollNo, email },
+                { $push: { total: score}}
+            )
+        }
         res.status(200).json({message: "Score updated successfully"});
     } catch (error) {
         console.log(error);
@@ -1339,7 +1367,7 @@ router.put('/mental-wellbeing-score', async(req, res) => {
 // get URL
 router.get('/url', async (req, res) => {
     const urls = await URLs.find({}).select({_id:0})
-    res.status(200).json({urls});
+    res.status(200).json({urls : urls});
 })
 
 module.exports = router;

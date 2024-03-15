@@ -429,19 +429,16 @@ const mentalWellbeingScoreSchema = new mongoose.Schema({
         required: true
     },
     textScore: {
-        type: Number,
-        min:1,
-        max:10
+        type: Array,
+        default: [],
     },
     mcqScore: {
-        type: Number,
-        min:1,
-        max:10
+        type: Array,
+        default: []
     },
     faceScore: {
-        type: Number,
-        min:1,
-        max:10
+        type: Array,
+        default: [],
     },
     textEmotion: {
         type: String,
@@ -453,9 +450,7 @@ const mentalWellbeingScoreSchema = new mongoose.Schema({
         type: String,
     },
     total: {
-        type: Number,
-        min:1,
-        max:10
+        type: Array,
     },
 })
 
@@ -471,9 +466,8 @@ const URLsSchema = new mongoose.Schema({
         required: true
     },
     // mostly not required field, use for last time changes
-    urlForMCQToEmotion: {
+    API_KEY: {
         type: String,
-        default: ''
     },
 })
 
