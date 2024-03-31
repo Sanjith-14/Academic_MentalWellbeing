@@ -1,3 +1,6 @@
+// For accessing the variables in .env files..
+const dotenv = require('dotenv')
+dotenv.config()
 const express = require('express')
 const mongoose = require('mongoose');
 const app = express()
@@ -10,10 +13,6 @@ const router = require('./source/routes/routes')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
-
-// For accessing the variables in .env files..
-const dotenv = require('dotenv')
-dotenv.config()
 
 mongoose.connect(process.env.MONGODB_URL , ()=>{
     console.log("DB Connected")

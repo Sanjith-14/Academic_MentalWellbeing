@@ -449,9 +449,12 @@ const mentalWellbeingScoreSchema = new mongoose.Schema({
     faceEmotion: {
         type: String,
     },
-    total: {
+    totalTime: {
         type: Array,
     },
+    totalEmotion: {
+        type: Array,
+    }
 })
 
 const MentalWellbeing = mongoose.model('MentalWellbeing',mentalWellbeingScoreSchema)
