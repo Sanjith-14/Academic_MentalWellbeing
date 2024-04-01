@@ -808,7 +808,7 @@ router.get("/courses/sem:semNo", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/courses/:courseId", verifyToken, async (req, res) => {
+router.get("/course/:courseId", verifyToken, async (req, res) => {
   try {
     console.log(req.params.courseId);
     const dataItem = await Course.find({ _id: req.params.courseId });
