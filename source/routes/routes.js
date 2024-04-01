@@ -1748,6 +1748,12 @@ router.post("/mental-wellbeing-v2", async (req, res) => {
       );
     }
 
+    // adding test time stamp
+    await MentalWellbeing.findOneAndUpdate(
+        { rollNo, email },
+        { $push: { testTimeStamp: new Date() } }
+      );
+
     return res.status(200).send({
       rollNo,
       email,

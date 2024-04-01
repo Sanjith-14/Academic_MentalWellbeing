@@ -454,6 +454,9 @@ const mentalWellbeingScoreSchema = new mongoose.Schema({
     },
     totalEmotion: {
         type: Array,
+    },
+    testTimeStamp: {
+        type: Array,
     }
 })
 
